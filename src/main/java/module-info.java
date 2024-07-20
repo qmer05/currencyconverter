@@ -10,6 +10,8 @@ module app.currencyconverter {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires okhttp3;
+    requires org.jsoup;
 
     opens app.currencyconverter to javafx.fxml;
     exports app.currencyconverter;

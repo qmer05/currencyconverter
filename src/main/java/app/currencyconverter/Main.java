@@ -12,9 +12,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 public class Main extends Application {
 
@@ -43,19 +42,19 @@ public class Main extends Application {
         Label labelFromCurrency = new Label("From currency:");
         Label labelToCurrency = new Label("To currency:");
 
+        LinkedHashMap <String, Double> exchangeRates = ExchangeRateExtractor.extractExchangeRate();
+
         ChoiceBox<String> convertFrom = new ChoiceBox<>();
-        convertFrom.getItems().addAll("USD", "EUR", "GBP");
+        for (Map.Entry<String, Double> entry : exchangeRates.entrySet()) {
+            String key = entry.getKey();
+            convertFrom.getItems().add(key);
+        }
 
         ChoiceBox<String> convertTo = new ChoiceBox<>();
-        convertTo.getItems().addAll("USD", "EUR", "GBP");
-
-        Map<String, Function<Double, Double>> conversionMap = new HashMap<>();
-        conversionMap.put("USD_EUR", CurrencyConverter::USDtoEUR);
-        conversionMap.put("EUR_USD", CurrencyConverter::EURtoUSD);
-        conversionMap.put("EUR_GBP", CurrencyConverter::EURtoGBP);
-        conversionMap.put("GBP_EUR", CurrencyConverter::GBPtoEUR);
-        conversionMap.put("GBP_USD", CurrencyConverter::GBPtoUSD);
-        conversionMap.put("USD_GBP", CurrencyConverter::USDtoGBP);
+        for (Map.Entry<String, Double> entry : exchangeRates.entrySet()) {
+            String key = entry.getKey();
+            convertTo.getItems().add(key);
+        }
 
         convertButton = new Button();
         convertButton.setText("Convert");
@@ -65,15 +64,10 @@ public class Main extends Application {
             String selectedToCurrency = convertTo.getSelectionModel().getSelectedItem();
             try {
                 double amount = Double.parseDouble(amountToConvert.getText());
-
-                String key = selectedFromCurrency + "_" + selectedToCurrency;
-
-                if (conversionMap.containsKey(key)) {
-                    double converted = conversionMap.get(key).apply(amount);
-                    convertedAmount.setText(String.valueOf(converted));
-                } else {
-                    convertedAmount.setText(String.valueOf(amount));
-                }
+                double dkkToFromCurrency = exchangeRates.get(selectedFromCurrency);
+                double dkkToToCurrency = exchangeRates.get(selectedToCurrency);
+                double converted = amount * (dkkToFromCurrency / dkkToToCurrency);
+                convertedAmount.setText(String.valueOf(converted));
             } catch (NumberFormatException ex) {
                 convertedAmount.setText("Conversion not supported");
             }
