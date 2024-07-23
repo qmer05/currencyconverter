@@ -12,8 +12,17 @@ import java.util.LinkedHashMap;
 
 public class ExchangeRateExtractor {
 
-    public static LinkedHashMap<String, Double> extractExchangeRate() {
-        String url = "https://www.valutakurser.dk";
+    private final String url;
+    private final String currencyNames;
+    private final String exchangeRates;
+
+    public ExchangeRateExtractor(String url, String currencyNames, String exchangeRates){
+        this.url = url;
+        this.currencyNames = currencyNames;
+        this.exchangeRates = exchangeRates;
+    }
+
+    public LinkedHashMap<String, Double> extractExchangeRate() {
 
         OkHttpClient client = new OkHttpClient();
 
@@ -26,21 +35,22 @@ public class ExchangeRateExtractor {
                 String html = response.body().string();
                 Document document = Jsoup.parse(html);
 
-                // Select the elements containing the currency pairs and exchange rates
-                Elements currencyPairs = document.select("div.currencyItem_currencyNameContainer__19YHn");
-                Elements rateElements = document.select("div.currencyItem_actualValueContainer__2xLkB");
+                // Select the elements containing the currencies and exchange rates
+                Elements currencyName = document.select(currencyNames);
+                Elements exchangeRate = document.select(exchangeRates);
 
                 // Ensure both Elements lists are of the same size
-                if (currencyPairs.size() == rateElements.size()) {
+                if (currencyName.size() == exchangeRate.size()) {
                     LinkedHashMap<String, Double> exchangeRates = new LinkedHashMap<>();
-                    for (int i = 0; i < currencyPairs.size(); i++) {
-                        String currencyPair = currencyPairs.get(i).text();
-                        String rate = rateElements.get(i).text();
+                    exchangeRates.put("Danske kroner", 100.00);
+                    for (int i = 0; i < currencyName.size(); i++) {
+                        String currency = currencyName.get(i).text();
+                        String rate = exchangeRate.get(i).text();
 
                         String modifiedRate = rate.replace(",", ".");
                         double modifiedRateResult = Double.parseDouble(modifiedRate);
 
-                        exchangeRates.put(currencyPair, modifiedRateResult);
+                        exchangeRates.put(currency, modifiedRateResult);
                     }
                     return exchangeRates;
                 } else {

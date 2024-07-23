@@ -8,7 +8,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -23,6 +25,8 @@ public class Main extends Application {
     Button exitButton;
     TextField amountToConvert;
     TextField convertedAmount;
+    String selectedFromCurrency;
+    String selectedToCurrency;
 
     public static void main(String[] args) {
         launch(args);
@@ -39,10 +43,12 @@ public class Main extends Application {
             closeProgram();
         });
 
-        Label labelFromCurrency = new Label("From currency:");
-        Label labelToCurrency = new Label("To currency:");
+        Label labelFromCurrency = new Label("From currency: ");
+        Label labelToCurrency = new Label("To currency: ");
+        Label labelAmount = new Label("Amount: ");
 
-        LinkedHashMap <String, Double> exchangeRates = ExchangeRateExtractor.extractExchangeRate();
+        ExchangeRateExtractor exchangeRateExtractor = new ExchangeRateExtractor("https://www.valutakurser.dk", "div.currencyItem_currencyNameContainer__19YHn", "div.currencyItem_actualValueContainer__2xLkB");
+        LinkedHashMap<String, Double> exchangeRates = exchangeRateExtractor.extractExchangeRate();
 
         ChoiceBox<String> convertFrom = new ChoiceBox<>();
         for (Map.Entry<String, Double> entry : exchangeRates.entrySet()) {
@@ -50,23 +56,57 @@ public class Main extends Application {
             convertFrom.getItems().add(key);
         }
 
+        ImageView flagImageViewFrom = new ImageView();
+        flagImageViewFrom.setFitHeight(32);
+        flagImageViewFrom.setFitWidth(32);
+
+        ImageView flagImageViewTo = new ImageView();
+        flagImageViewTo.setFitHeight(32);
+        flagImageViewTo.setFitWidth(32);
+
+        convertFrom.setOnAction(e -> {
+            String selectedFromCurrency = convertFrom.getSelectionModel().getSelectedItem();
+            if (selectedFromCurrency != null) {
+                try {
+                    String imagePath = "/images/" + selectedFromCurrency + ".png";
+                    Image flagImage = new Image(getClass().getResourceAsStream(imagePath));
+                    flagImageViewFrom.setImage(flagImage);
+                } catch (Exception ex) {
+                    flagImageViewFrom.setImage(null);
+                }
+            }
+        });
+
         ChoiceBox<String> convertTo = new ChoiceBox<>();
         for (Map.Entry<String, Double> entry : exchangeRates.entrySet()) {
             String key = entry.getKey();
             convertTo.getItems().add(key);
         }
 
+        convertTo.setOnAction(e -> {
+            String selectedToCurrency = convertTo.getSelectionModel().getSelectedItem();
+            if (selectedToCurrency != null) {
+                try {
+                    String imagePath = "/images/" + selectedToCurrency + ".png";
+                    Image flagImage = new Image(getClass().getResourceAsStream(imagePath));
+                    flagImageViewTo.setImage(flagImage);
+                } catch (Exception ex) {
+                    flagImageViewTo.setImage(null);
+                }
+            }
+        });
+
         convertButton = new Button();
         convertButton.setText("Convert");
         convertButton.setOnAction(e -> {
+            selectedFromCurrency = convertFrom.getSelectionModel().getSelectedItem();
+            selectedToCurrency = convertTo.getSelectionModel().getSelectedItem();
 
-            String selectedFromCurrency = convertFrom.getSelectionModel().getSelectedItem();
-            String selectedToCurrency = convertTo.getSelectionModel().getSelectedItem();
             try {
                 double amount = Double.parseDouble(amountToConvert.getText());
                 double dkkToFromCurrency = exchangeRates.get(selectedFromCurrency);
                 double dkkToToCurrency = exchangeRates.get(selectedToCurrency);
-                double converted = amount * (dkkToFromCurrency / dkkToToCurrency);
+                double converted = (double) Math.round((amount * (dkkToFromCurrency / dkkToToCurrency) * 100)) / 100;
                 convertedAmount.setText(String.valueOf(converted));
             } catch (NumberFormatException ex) {
                 convertedAmount.setText("Conversion not supported");
@@ -80,12 +120,26 @@ public class Main extends Application {
         amountToConvert = new TextField();
         convertedAmount = new TextField();
 
-        VBox layout = new VBox(10);
-        layout.setPadding(new Insets(20, 20, 20, 20));
-        layout.setAlignment(Pos.CENTER);
-        layout.getChildren().addAll(labelFromCurrency, convertFrom, amountToConvert, labelToCurrency, convertTo, convertedAmount, convertButton, exitButton);
+        GridPane gridPane = new GridPane();
+        gridPane.setMinSize(400, 200);
+        gridPane.setPadding(new Insets(10, 10, 10, 10));
+        gridPane.setHgap(5);
+        gridPane.setVgap(5);
+        gridPane.setAlignment(Pos.CENTER);
 
-        scene = new Scene(layout, 450, 350);
+        gridPane.add(labelFromCurrency, 0, 0);
+        gridPane.add(convertFrom, 1, 0);
+        gridPane.add(flagImageViewFrom, 2, 0);
+        gridPane.add(labelToCurrency, 0, 1);
+        gridPane.add(convertTo, 1, 1);
+        gridPane.add(flagImageViewTo, 2, 1);
+        gridPane.add(labelAmount, 0, 2);
+        gridPane.add(amountToConvert, 1, 2);
+        gridPane.add(convertedAmount, 1, 3);
+        gridPane.add(convertButton, 1, 4);
+        gridPane.add(exitButton, 1, 5);
+
+        scene = new Scene(gridPane, 350, 250);
         window.setScene(scene);
         window.show();
     }
