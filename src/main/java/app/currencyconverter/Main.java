@@ -90,6 +90,9 @@ public class Main extends Application {
             String selectedToCurrency = convertTo.getSelectionModel().getSelectedItem();
             if (selectedToCurrency != null) {
                 try {
+                    if (selectedToCurrency.contains("*")) {
+                        selectedToCurrency = selectedToCurrency.replaceAll("\\*", "").trim();
+                    }
                     String imagePath = "/images/" + selectedToCurrency + ".png";
                     Image flagImage = new Image(getClass().getResourceAsStream(imagePath));
                     flagImageViewTo.setImage(flagImage);
