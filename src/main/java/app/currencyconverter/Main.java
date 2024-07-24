@@ -50,12 +50,6 @@ public class Main extends Application {
         ExchangeRateExtractor exchangeRateExtractor = new ExchangeRateExtractor("https://www.valutakurser.dk", "div.currencyItem_currencyNameContainer__19YHn", "div.currencyItem_actualValueContainer__2xLkB");
         LinkedHashMap<String, Double> exchangeRates = exchangeRateExtractor.extractExchangeRate();
 
-        ChoiceBox<String> convertFrom = new ChoiceBox<>();
-        for (Map.Entry<String, Double> entry : exchangeRates.entrySet()) {
-            String key = entry.getKey();
-            convertFrom.getItems().add(key);
-        }
-
         ImageView flagImageViewFrom = new ImageView();
         flagImageViewFrom.setFitHeight(32);
         flagImageViewFrom.setFitWidth(32);
@@ -64,10 +58,19 @@ public class Main extends Application {
         flagImageViewTo.setFitHeight(32);
         flagImageViewTo.setFitWidth(32);
 
+        ChoiceBox<String> convertFrom = new ChoiceBox<>();
+        for (Map.Entry<String, Double> entry : exchangeRates.entrySet()) {
+            String key = entry.getKey();
+            convertFrom.getItems().add(key);
+        }
+
         convertFrom.setOnAction(e -> {
             String selectedFromCurrency = convertFrom.getSelectionModel().getSelectedItem();
             if (selectedFromCurrency != null) {
                 try {
+                    if (selectedFromCurrency.contains("*")) {
+                        selectedFromCurrency = selectedFromCurrency.replaceAll("\\*", "").trim();
+                    }
                     String imagePath = "/images/" + selectedFromCurrency + ".png";
                     Image flagImage = new Image(getClass().getResourceAsStream(imagePath));
                     flagImageViewFrom.setImage(flagImage);
