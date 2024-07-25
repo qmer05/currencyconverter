@@ -10,13 +10,13 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 
-public class ExchangeRateExtractor {
+public class ExchangeRateMapper {
 
     private final String url;
     private final String currencyNames;
     private final String exchangeRates;
 
-    public ExchangeRateExtractor(String url, String currencyNames, String exchangeRates){
+    public ExchangeRateMapper(String url, String currencyNames, String exchangeRates){
         this.url = url;
         this.currencyNames = currencyNames;
         this.exchangeRates = exchangeRates;
