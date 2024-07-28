@@ -4,17 +4,17 @@
 Currency Converter is a JavaFX application that allows users to convert amounts between different currencies using the latest exchange rates. The application fetches the latest rates from valutakurser.dk and provides an intuitive interface for users to select currencies, input amounts, and view converted values.
 
 ## Features
-Convert amounts between various currencies
+Convert amounts between various currencies.
 
-Display corresponding flag images for selected currencies
+Display corresponding flag images for selected currencies.
 
-Fetch live exchange rates from the internet
+Fetch live exchange rates from the internet.
 
-User-friendly interface with JavaFX
+User-friendly interface with JavaFX.
 
-Confirmation dialog before exiting the application
+Confirmation dialog before exiting the application.
 
-Error handling and alert messages for common issues
+Error handling and alert messages for common issues.
 
 ## Technologies Used 
 Java 21
@@ -39,6 +39,49 @@ Jsoup (for web scraping)
 OkHttp (for HTTP requests)
 
 Refer to pom.xml for the complete list of dependencies.
+
+## Classes and Their Responsibilities
+
+### Main.java
+
+Entry point of the application.
+
+Launches the ExchangeRateController.
+
+
+### ExchangeRateController.java
+
+Extends Application.
+
+Sets up the primary stage and scene.
+
+Handles UI components and their events.
+
+Fetches exchange rates using ExchangeRateMapper.
+
+Converts the entered amount based on selected currencies.
+
+
+### ExchangeRateMapper.java
+
+Fetches and parses exchange rates from the specified URL using OkHttp and Jsoup.
+
+Returns a map of currency names to their respective exchange rates.
+
+
+### ConfirmBox.java
+
+Displays a confirmation dialog with "Yes" and "No" buttons.
+
+Used for confirming actions like exiting the application.
+
+
+### AlertBox.java
+
+Displays an alert dialog with a message and a "Close" button.
+
+Used for showing error messages or other important information.
+
 
 ## Installation
 **Clone the repository:**
