@@ -4,20 +4,28 @@
 Currency Converter is a JavaFX application that allows users to convert amounts between different currencies using the latest exchange rates. The application fetches the latest rates from valutakurser.dk and provides an intuitive interface for users to select currencies, input amounts, and view converted values.
 
 ## Features
-Fetches and displays real-time exchange rates.
-Supports multiple currencies.
-Displays flags for selected currencies.
-Simple and intuitive user interface.
-Error handling for unsupported conversions and network issues.
-Confirm exit prompt to prevent accidental closure.
-Prerequisites
-Java Development Kit (JDK) 8 or higher.
-Internet connection (to fetch the latest exchange rates).
+Convert amounts between various currencies
+Display corresponding flag images for selected currencies
+Fetch live exchange rates from the internet
+User-friendly interface with JavaFX
+Confirmation dialog before exiting the application
+Error handling and alert messages for common issues
+
+## Technologies Used 
+Java 21
+JavaFX 21
+OkHttp 4.12.0 (for HTTP requests)
+Jsoup 1.18.1 (for web scraping)
+Maven (for project management and build automation)
 
 ## Dependencies
-JavaFX
-OkHttp3
-JSoup
+Dependencies are managed through Maven. The key dependencies used in this project are:
+
+JavaFX Controls
+JUnit 5 (for testing)
+Jsoup (for web scraping)
+OkHttp (for HTTP requests)
+Refer to pom.xml for the complete list of dependencies.
 
 ## Installation
 Clone the repository:
@@ -34,7 +42,6 @@ Download and set up JSoup:
 Add JSoup dependency in your build configuration.
 
 ## Running the Application
-
 Compile the project:
 javac -cp "path/to/javafx/lib/*;path/to/okhttp3.jar;path/to/jsoup.jar" -d bin src/app/currencyconverter/*.java
 
