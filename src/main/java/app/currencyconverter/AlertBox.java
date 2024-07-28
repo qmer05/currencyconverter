@@ -15,8 +15,8 @@ public class AlertBox {
 
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle(title);
-        window.setMinWidth(200);
-        window.setMinHeight(100);
+        window.setMinWidth(400);
+        window.setMinHeight(200);
 
         Label label = new Label();
         label.setText(message);
@@ -31,6 +31,5 @@ public class AlertBox {
         Scene scene = new Scene(layout);
         window.setScene(scene);
         window.showAndWait();
-
     }
 }

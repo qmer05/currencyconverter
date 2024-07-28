@@ -48,7 +48,6 @@ public class ExchangeRateController extends Application {
         String exchangeRatesCSS = "div.currencyItem_actualValueContainer__2xLkB";
 
         ExchangeRateMapper exchangeRateMapper = new ExchangeRateMapper(url, currencyNamesCSS, exchangeRatesCSS);
-
         LinkedHashMap<String, Double> exchangeRatesMap = exchangeRateMapper.extractExchangeRate();
 
         ImageView flagImageViewFrom = new ImageView();
@@ -60,9 +59,14 @@ public class ExchangeRateController extends Application {
         flagImageViewTo.setFitWidth(32);
 
         ChoiceBox<String> convertFrom = new ChoiceBox<>();
-        for (Map.Entry<String, Double> entry : exchangeRatesMap.entrySet()) {
-            String key = entry.getKey();
-            convertFrom.getItems().add(key);
+        if (exchangeRatesMap != null) {
+            for (Map.Entry<String, Double> entry : exchangeRatesMap.entrySet()) {
+                String key = entry.getKey();
+                convertFrom.getItems().add(key);
+            }
+        } else {
+            AlertBox.display("Error", "There are no exchangeRates available." +
+                    "\nTry checking your internet connection.");
         }
 
         convertFrom.setOnAction(e -> {
@@ -82,9 +86,11 @@ public class ExchangeRateController extends Application {
         });
 
         ChoiceBox<String> convertTo = new ChoiceBox<>();
-        for (Map.Entry<String, Double> entry : exchangeRatesMap.entrySet()) {
-            String key = entry.getKey();
-            convertTo.getItems().add(key);
+        if (exchangeRatesMap != null) {
+            for (Map.Entry<String, Double> entry : exchangeRatesMap.entrySet()) {
+                String key = entry.getKey();
+                convertTo.getItems().add(key);
+            }
         }
 
         convertTo.setOnAction(e -> {
@@ -152,7 +158,7 @@ public class ExchangeRateController extends Application {
     }
 
     private void closeProgram() {
-        boolean answer = ConfirmBox.display("Title", "Are you sure you want to exit?");
+        boolean answer = ConfirmBox.display("Exit", "Are you sure you want to exit?");
         if (answer) {
             window.close();
         }
